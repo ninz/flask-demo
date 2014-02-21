@@ -15,8 +15,9 @@ Running quickndirty:
     ipython
     >>> from quickndirty import init_db
     >>> init_db()
-    # check schema
-    sqlite3
+    # check schema - test.db may not be in this exact location
+    # but should always be in whatever *your* temp dir is
+    sqlite3 /tmp/test.db
     sqlite> .schema scrapbook
     # start app
     cd quickndirty
