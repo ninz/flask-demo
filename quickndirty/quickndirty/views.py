@@ -17,6 +17,7 @@ def show_entries():
 @app.route('/add', methods=["POST"])
 def add_entry():
     s = Scrapbook(
+        request.form['content_url'],
         request.form['title'],
         request.form['resource_type'],
         request.form['version'],

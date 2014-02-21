@@ -155,11 +155,26 @@
                 content_url: $('input#content_url').val()
               },
               function(data) {
-                console.log(data);
+                $('#title').val(data.title);
+                $('#resource_type').val(data.type);
+                $('#version').val(data.version);
+                $('#author_name').val(data.author_name);
+                $('#author_url').val(data.author_url);
+                $('#provider_name').val(data.provider_name);
+                $('#provider_url').val(data.provider_url);
+                $('#thumbnail_url').val(data.thumbnail_url);
+                $('#thumbnail_height').val(data.thumbnail_height);
+                $('#thumbnail_width').val(data.thumbnail_width);
+                $('#height').val(data.height);
+                $('#width').val(data.width);
+
                 if (data.type == 'photo') {
+                    $('#url').val(data.url);
                     $('#preview_pane').html('<img src="' + data.url + '" />');
                 } else if (data.type == 'video' || data.type == 'rich') {
-                    markup = _.unescape(data.html);
+                    $('#html').val(data.html);
+                    if (data.url) $('#url').val(data.url);
+                    var markup = _.unescape(data.html);
                     $('#preview_pane').html(markup);
                 }
               },
