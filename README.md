@@ -11,11 +11,16 @@ Running hello_world demo:
 Running quickndirty:
 --------------------
 
+    # set up db
     ipython
     >>> from quickndirty import init_db
     >>> init_db()
+    # check schema
     sqlite3
     sqlite> .schema scrapbook
+    # start app
+    cd quickndirty
+    python runserver.py
 
 
 
