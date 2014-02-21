@@ -1,7 +1,11 @@
-from Flask import request, render_template, redirect, url_for, flash
+import requests
+import json
+from flask import request, render_template, redirect, url_for, jsonify
 from quickndirty import app
 from quickndirty.database import db_session
 from quickndirty.models import Scrapbook
+from pyembed.core import discovery
+
 
 
 @app.route('/')
@@ -29,5 +33,15 @@ def add_entry():
     )
     db_session.add(s)
     db_session.commit()
-    flash('New entry was successfully posted')
+    #flash('New entry was successfully posted')
     return redirect(url_for('show_entries'))
+
+
+@app.route('/lookup', methods=["POST"])
+def lookup_oembed():
+    content_url = request.form.get('content_url')
+    (discovered_format, oembed_url) = discovery.get_oembed_url(
+        content_url, max_width=300, max_height=300)
+    response = requests.get(oembed_url)
+    oembed_fields = json.loads(response.text)
+    return jsonify(oembed_fields)

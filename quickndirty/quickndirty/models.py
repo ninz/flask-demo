@@ -5,6 +5,7 @@ from quickndirty.database import Base
 class Scrapbook(Base):
     __tablename__ = 'scrapbook'
     id = Column(Integer, primary_key=True)
+    content_url = Column(String(128), unique=True)
     title = Column(String(50), unique=True)
     resource_type = Column(String(32))
     # photo, video, link, rich
@@ -21,9 +22,10 @@ class Scrapbook(Base):
     width = Column(Integer)
     height = Column(Integer)
 
-    def __init__(self, title, resource_type=None, version=None, author_name=None, author_url=None, provider_name=None,
-                 provider_url=None, thumbnail_url=None, thumbnail_width=None, thumbnail_height=None, url=None,
-                 html=None, width=None, height=None):
+    def __init__(self, content_url, title, resource_type=None, version=None, author_name=None, author_url=None,
+                 provider_name=None, provider_url=None, thumbnail_url=None, thumbnail_width=None, thumbnail_height=None,
+                 url=None, html=None, width=None, height=None):
+        self.content_url = content_url
         self.title = title
         self.resource_type = resource_type
         self.version = version

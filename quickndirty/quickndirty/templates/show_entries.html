@@ -1,8 +1,16 @@
 {% extends "layout.html" %}
 {% block body %}
-  {% if session.logged_in %}
     <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
       <table>
+          <tr>
+              <td>
+                  <label for="content_url">Content URL</label>
+              </td>
+              <td>
+                  <input type="text" name="content_url" id="content_url"/>
+              </td>
+              <td><button type="button" id="preview_embed">Preview</button></td>
+          </tr>
           <tr>
               <td>
                   <label for="title">Title</label>
@@ -122,12 +130,43 @@
 
       </table>
     </form>
-  {% endif %}
+    <div id="preview_pane"></div>
   <ul class=entries>
   {% for entry in entries %}
-    <li><h2>{{ entry.title }}</h2>{{ entry.text|safe }}
+    <li>
+        <h2>{{ entry.title }}</h2>{{ entry.text|safe }}
+    </li>
   {% else %}
-    <li><em>Unbelievable.  No entries here so far</em>
+    <li>
+        <em>Unbelievable.  No entries here so far</em>
+    </li>
   {% endfor %}
   </ul>
+{% endblock %}
+
+{% block javascript %}
+  {{ super() }}
+<script type=text/javascript>
+  $(function() {
+    $('button#preview_embed').bind('click',
+      function() {
+          $.post('/lookup',
+              {
+                content_url: $('input#content_url').val()
+              },
+              function(data) {
+                console.log(data);
+                if (data.type == 'photo') {
+                    $('#preview_pane').html('<img src="' + data.url + '" />');
+                } else if (data.type == 'video' || data.type == 'rich') {
+                    markup = _.unescape(data.html);
+                    $('#preview_pane').html(markup);
+                }
+              },
+              'json'
+          );
+          return false;
+    });
+  });
+</script>
 {% endblock %}
