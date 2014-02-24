@@ -7,30 +7,35 @@ from quickndirty.models import Scrapbook
 from pyembed.core import discovery
 
 
-
 @app.route('/')
 def show_entries():
     entries = db_session.query(Scrapbook).all()
     return render_template('show_entries.html', entries=entries)
 
 
-@app.route('/add', methods=["POST"])
+@app.route('/new')
+def new_entry():
+    return render_template('new_entry.html')
+
+
+@app.route('/create', methods=["POST"])
 def add_entry():
     s = Scrapbook(
         request.form['content_url'],
         request.form['title'],
-        request.form['resource_type'],
-        request.form['version'],
-        request.form['author_name'],
-        request.form['author_url'],
-        request.form['provider_name'],
-        request.form['provider_url'],
-        request.form['thumbnail_url'],
-        request.form['thumbnail_width'],
-        request.form['thumbnail_height'],
-        request.form['url'],
-        request.form['width'],
-        request.form['height']
+        resource_type=request.form['resource_type'],
+        version=request.form['version'],
+        author_name=request.form['author_name'],
+        author_url=request.form['author_url'],
+        provider_name=request.form['provider_name'],
+        provider_url=request.form['provider_url'],
+        thumbnail_url=request.form['thumbnail_url'],
+        thumbnail_width=request.form['thumbnail_width'],
+        thumbnail_height=request.form['thumbnail_height'],
+        url=request.form['url'],
+        html=request.form['html'],
+        width=request.form['width'],
+        height=request.form['height']
     )
     db_session.add(s)
     db_session.commit()

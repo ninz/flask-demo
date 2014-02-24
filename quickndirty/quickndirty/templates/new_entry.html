@@ -1,0 +1,178 @@
+{% extends "layout.html" %}
+{% block body %}
+    <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
+      <table>
+          <tr>
+              <td>
+                  <label for="content_url">Content URL</label>
+              </td>
+              <td>
+                  <input type="text" name="content_url" id="content_url"/>
+              </td>
+              <td><button type="button" id="preview_embed">Preview</button></td>
+          </tr>
+          <tr>
+              <td>
+                  <label for="title">Title</label>
+              </td>
+              <td>
+                  <input type="text" name="title" id="title"/>
+              </td>
+          </tr>
+          <tr>
+              <td>
+                  <label for="resource_type">Resource Type</label>
+              </td>
+              <td>
+                  <input type="text" name="resource_type" id="resource_type"/>
+              </td>
+          </tr>
+          <tr>
+              <td>
+                  <label for="version">Version</label>
+              </td>
+              <td>
+                  <input type="text" name="version" id="version"/>
+              </td>
+          </tr>
+          <tr>
+              <td>
+                  <label for="author_name">Author Name</label>
+              </td>
+              <td>
+                  <input type="text" name="author_name" id="author_name"/>
+              </td>
+          </tr>
+          <tr>
+              <td>
+                  <label for="author_url">Author URL</label>
+              </td>
+              <td>
+                  <input type="text" name="author_url" id="author_url"/>
+              </td>
+          </tr>
+          <tr>
+              <td>
+                  <label for="provider_name">Provider Name</label>
+              </td>
+              <td>
+                  <input type="text" name="provider_name" id="provider_name"/>
+              </td>
+          </tr>
+          <tr>
+              <td>
+                  <label for="provider_url">Provider URL</label>
+              </td>
+              <td>
+                  <input type="text" name="provider_url" id="provider_url"/>
+              </td>
+          </tr>
+          <tr>
+              <td>
+                  <label for="thumbnail_url">Thumbnail URL</label>
+              </td>
+              <td>
+                  <input type="text" name="thumbnail_url" id="thumbnail_url"/>
+              </td>
+          </tr>
+          <tr>
+              <td>
+                  <label for="thumbnail_height">Thumbnail Height</label>
+              </td>
+              <td>
+                  <input type="text" name="thumbnail_height" id="thumbnail_height"/>
+              </td>
+          </tr>
+          <tr>
+              <td>
+                  <label for="thumbnail_width">Thumbnail Width</label>
+              </td>
+              <td>
+                  <input type="text" name="thumbnail_width" id="thumbnail_width"/>
+              </td>
+          </tr>
+          <tr>
+              <td>
+                  <label for="url">URL</label>
+              </td>
+              <td>
+                  <input type="text" name="url" id="url"/>
+              </td>
+          </tr>
+          <tr>
+              <td>
+                  <label for="html">HTML</label>
+              </td>
+              <td>
+                  <input type="text" name="html" id="html"/>
+              </td>
+          </tr>
+          <tr>
+              <td>
+                  <label for="width">Width</label>
+              </td>
+              <td>
+                  <input type="text" name="width" id="width"/>
+              </td>
+          </tr>
+          <tr>
+              <td>
+                  <label for="height">Height</label>
+              </td>
+              <td>
+                  <input type="text" name="height" id="height"/>
+              </td>
+          </tr>
+          <tr>
+              <td><input type="submit" /></td>
+              <td></td>
+          </tr>
+
+      </table>
+    </form>
+    <div id="preview_pane"></div>
+
+{% endblock %}
+
+{% block javascript %}
+  {{ super() }}
+    <script type=text/javascript>
+      $(function() {
+        $('button#preview_embed').bind('click',
+          function() {
+              $.post('/lookup',
+                  {
+                    content_url: $('input#content_url').val()
+                  },
+                  function(data) {
+                    $('#title').val(data.title);
+                    $('#resource_type').val(data.type);
+                    $('#version').val(data.version);
+                    $('#author_name').val(data.author_name);
+                    $('#author_url').val(data.author_url);
+                    $('#provider_name').val(data.provider_name);
+                    $('#provider_url').val(data.provider_url);
+                    $('#thumbnail_url').val(data.thumbnail_url);
+                    $('#thumbnail_height').val(data.thumbnail_height);
+                    $('#thumbnail_width').val(data.thumbnail_width);
+                    $('#height').val(data.height);
+                    $('#width').val(data.width);
+
+                    if (data.type == 'photo') {
+                        $('#url').val(data.url);
+                        $('#preview_pane').html('<img src="' + data.url + '" />');
+                    } else if (data.type == 'video' || data.type == 'rich') {
+                        var unescaped_html = _.unescape(data.html)
+                        $('#html').val(unescaped_html);
+                        if (data.url) $('#url').val(data.url);
+                        var markup = unescaped_html;
+                        $('#preview_pane').html(markup);
+                    }
+                  },
+                  'json'
+              );
+              return false;
+        });
+      });
+    </script>
+{% endblock %}
