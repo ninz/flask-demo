@@ -13,14 +13,12 @@ Running quickndirty:
 
     # set up db
     ipython
-    >>> from quickndirty import init_db
+    >>> from quickndirty.database import init_db
     >>> init_db()
-    # check schema - test.db may not be in this exact location
-    # but should always be in whatever *your* temp dir is
+    # check schema
     sqlite3 /tmp/test.db
     sqlite> .schema scrapbook
     # start app
-    cd quickndirty
     python runserver.py
 
 
