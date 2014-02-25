@@ -21,6 +21,12 @@ Running quickndirty:
     # start app
     python runserver.py
 
+Testing embeds:
+===============
+
+ * https://www.youtube.com/watch?v=9bZkp7q19f0
+ * https://www.nfb.ca/film/the-cat-came-back
+ * https://www.flickr.com/photos/eythoringi/12642792555/
 
 
 Design:
