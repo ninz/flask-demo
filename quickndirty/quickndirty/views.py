@@ -45,9 +45,11 @@ def add_entry():
 
 @app.route('/lookup', methods=["POST"])
 def lookup_oembed():
+    from flask import current_app
     content_url = request.form.get('content_url')
     (discovered_format, oembed_url) = discovery.get_oembed_url(
         content_url, max_width=300, max_height=300)
+    current_app.logger.debug(oembed_url)
     response = requests.get(oembed_url)
     oembed_fields = json.loads(response.text)
     return jsonify(oembed_fields)

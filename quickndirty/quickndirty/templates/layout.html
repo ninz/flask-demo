@@ -7,10 +7,6 @@
     <body>
     <div class=page>
       <h1>Quick 'n' dirty Flask Scrapbook</h1>
-
-      {% for message in get_flashed_messages() %}
-        <div class=flash>{{ message }}</div>
-      {% endfor %}
       {% block body %}{% endblock %}
       {% block javascript %}
         <script type="text/javascript" src="{{ url_for('static', filename='jquery-2.1.0.js') }}"></script>
