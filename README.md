@@ -24,7 +24,7 @@ Running quickndirty (tumblr-ish media sharing website):
 About oEmbed:
 -------------
 From http://oembed.com/:
-> oEmbed is a format for allowing an embedded representation of a URL on third party sites. The simple API allows a > website to display embedded content (such as photos or videos) when a user posts a link to that resource, without > having to parse the resource directly.
+> oEmbed is a format for allowing an embedded representation of a URL on third party sites. The simple API allows a  website to display embedded content (such as photos or videos) when a user posts a link to that resource, without  having to parse the resource directly.
 
 Some providers of oEmbed content include YouTube, Flickr, and NFB.ca (National Film Board of Canada). Quick 'n Dirty is a consumer of oEmbed content.
 
