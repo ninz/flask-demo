@@ -3,6 +3,14 @@ flask-demo
 
 Flask Demo for ConFoo 2014
 
+Basic Setup:
+------------
+
+    pip install virtualenv
+    virtualenv flask
+    source flask/bin/activate
+    pip install -r requirements.txt
+
 Running hello_world demo:
 -------------------------
 
