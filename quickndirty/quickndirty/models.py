@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text
 from quickndirty.database import Base
+from quickndirty import app
 
 
 class Scrapbook(Base):
@@ -42,4 +43,10 @@ class Scrapbook(Base):
         self.height = height
 
     def __repr__(self):
-        return '<User %r>' % self.title
+        return '<Scrap %r>' % self.title
+
+    def as_dict(self):
+        db_dict = self.__dict__
+        if db_dict.has_key('_sa_instance_state'):
+            del db_dict['_sa_instance_state']
+        return db_dict
