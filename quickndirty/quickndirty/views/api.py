@@ -15,7 +15,13 @@ def index():
 @app.route('/api/scraps')
 def get_all():
     scraps = db_session.query(Scrapbook).all()
-    return jsonify({'scraps': [scrap.as_dict() for scrap in scraps]})
+    scrap_dicts = []
+    for scrap in scraps:
+        scrap_dict = scrap.as_dict()
+        scrap_dict['_link'] = url_for('get', **{'scrap_id': scrap.id})
+        scrap_dicts.append(scrap_dict)
+    # I returned a nice list comprehension here before, but had to add _link to each dict. Such is life
+    return jsonify({'scraps': scrap_dicts})
 
 
 @app.route('/api/scraps', methods=['POST'])
@@ -41,6 +47,8 @@ def get(scrap_id):
     scrap = db_session.query(Scrapbook).get(scrap_id)
     if not scrap:
         return error("Scrap not found")
+    scrap_dict = scrap.as_dict()
+    scrap_dict['_link'] = url_for('get', **{'scrap_id': scrap.id})
     return jsonify(scrap.as_dict())
 
 
@@ -54,7 +62,7 @@ def delete(scrap_id):
         uri = url_for('get', **{'scrap_id': s.id})
     db_session.delete(s)
     db_session.commit()
-    return jsonify({"message": "%s was successfully deleted" % uri})
+    return jsonify({"message": "%s was successfully deleted" % uri, "_link": url_for('get_all')})
 
 
 def error(error_message="Resource not found", status_code=404):
