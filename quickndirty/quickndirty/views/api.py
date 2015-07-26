@@ -9,7 +9,7 @@ from pyembed.core.discovery import PyEmbedDiscoveryError, get_oembed_url
 
 @app.route('/api')
 def index():
-    pass
+    return jsonify({'scraps': url_for('get_all')})
 
 
 @app.route('/api/scraps')
@@ -18,21 +18,15 @@ def get_all():
     return jsonify({'scraps': [scrap.as_dict() for scrap in scraps]})
 
 
-@app.route('/api/scraps/<int:scrap_id>')
-def get(scrap_id):
-    scrap = db_session.query(Scrapbook).get(scrap_id)
-    if not scrap:
-        return error("Scrap not found")
-    return jsonify(scrap.as_dict())
-
-
-@app.route('/api/scraps/', methods=['POST'])
+@app.route('/api/scraps', methods=['POST'])
 def create():
     json_data = request.get_json(force=True)
     try:
         (discovered_format, oembed_url) = get_oembed_url(json_data['scrap'], max_width=300, max_height=300)
     except PyEmbedDiscoveryError:
         return error("Invalid oEmbed resource URL", 400)
+    except KeyError:
+        return error("POST to /api/scraps takes one parameter, scrap", 400)
 
     response = requests.get(oembed_url)
     oembed_fields = json.loads(response.text)
@@ -42,9 +36,12 @@ def create():
     return jsonify({"scrap": url_for('get', **{'scrap_id': s.id})}), 201
 
 
-@app.route('/api/scraps/<int:scrap_id>', methods=['PUT'])
-def update():
-    pass
+@app.route('/api/scraps/<int:scrap_id>')
+def get(scrap_id):
+    scrap = db_session.query(Scrapbook).get(scrap_id)
+    if not scrap:
+        return error("Scrap not found")
+    return jsonify(scrap.as_dict())
 
 
 @app.route('/api/scraps/<int:scrap_id>', methods=['DELETE'])
