@@ -28,6 +28,10 @@ Running quickndirty (tumblr-ish media sharing website):
     sqlite> .schema scrapbook
     # start app
     python runserver.py
+    
+Using quickndirty
+-----------------
+There is a web frontend available at http://127.0.0.1:5000/ in the browser, and an API available at http://127.0.0.1:5000/api. The API can be called with any HTTP client you wish, but the Postman extension for Chrome is a good choice. I've uploaded some example calls here: https://www.getpostman.com/collections/9c65431283ab1d59e34f.
 
 About oEmbed:
 -------------
