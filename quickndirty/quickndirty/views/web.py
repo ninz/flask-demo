@@ -22,7 +22,7 @@ def new_entry():
 def add_entry():
     s = Scrapbook(
         request.form['content_url'],
-        request.form['title'],
+        title=request.form['title'],
         resource_type=request.form['resource_type'],
         version=request.form['version'],
         author_name=request.form['author_name'],

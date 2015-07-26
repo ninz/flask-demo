@@ -5,11 +5,14 @@
     <li><a href="/new">Add to the scrapbook</a></li>
   {% for entry in entries %}
     <li>
-        <h2>{{ entry.title }}</h2>{{ entry.text|safe }}
-        {% if entry.resource_type == 'video' %}
-            {{ entry.html|safe }}
-        {% elif entry.resource_type == 'photo' %}
-        '<img src="{{ entry.url }}" />
+        <h2>{{ entry.title }}</h2>
+        <p>{{ entry.text|safe }}</p>
+        {% if entry.html %}
+          {{ entry.html|safe }}
+        {% else %}
+          {% if entry.resource_type == 'photo' %}
+              <img src="{{ entry.url }}" />
+          {% endif %}
         {% endif %}
     </li>
   {% else %}

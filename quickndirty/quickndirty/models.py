@@ -8,8 +8,8 @@ class Scrapbook(Base):
     id = Column(Integer, primary_key=True)
     content_url = Column(String(128), unique=True)
     title = Column(String(50), unique=True)
-    resource_type = Column(String(32))
     # photo, video, link, rich
+    resource_type = Column(String(32))
     version = Column(String(4))
     author_name = Column(String(64))
     author_url = Column(String(64))
@@ -23,30 +23,20 @@ class Scrapbook(Base):
     width = Column(Integer)
     height = Column(Integer)
 
-    def __init__(self, content_url, title, resource_type=None, version=None, author_name=None, author_url=None,
-                 provider_name=None, provider_url=None, thumbnail_url=None, thumbnail_width=None, thumbnail_height=None,
-                 url=None, html=None, width=None, height=None):
+    def __init__(self, content_url, **kwargs):
         self.content_url = content_url
-        self.title = title
-        self.resource_type = resource_type
-        self.version = version
-        self.author_name = author_name
-        self.author_url = author_url
-        self.provider_name = provider_name
-        self.provider_url = provider_url
-        self.thumbnail_url = thumbnail_url
-        self.thumbnail_height = thumbnail_height
-        self.thumbnail_width = thumbnail_width
-        self.url = url
-        self.html = html
-        self.width = width
-        self.height = height
+        for k, v in kwargs.iteritems():
+            # type is a reserved word, can't name a var type
+            if k == 'type':
+                self.resource_type = v
+            if hasattr(self, k):
+                setattr(self, k, v)
 
     def __repr__(self):
         return '<Scrap %r>' % self.title
 
     def as_dict(self):
         db_dict = self.__dict__
-        if db_dict.has_key('_sa_instance_state'):
+        if '_sa_instance_state' in db_dict:
             del db_dict['_sa_instance_state']
         return db_dict

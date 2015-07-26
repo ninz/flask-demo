@@ -1,10 +1,10 @@
 import requests
 import json
-from flask import request, jsonify
+from flask import request, jsonify, url_for
 from quickndirty import app
 from quickndirty.database import db_session
 from quickndirty.models import Scrapbook
-from pyembed.core import discovery
+from pyembed.core.discovery import PyEmbedDiscoveryError, get_oembed_url
 
 
 @app.route('/api')
@@ -15,7 +15,7 @@ def index():
 @app.route('/api/scraps')
 def get_all():
     scraps = db_session.query(Scrapbook).all()
-    return jsonify({'scraps' : [scrap.as_dict() for scrap in scraps]})
+    return jsonify({'scraps': [scrap.as_dict() for scrap in scraps]})
 
 
 @app.route('/api/scraps/<int:scrap_id>')
@@ -28,13 +28,18 @@ def get(scrap_id):
 
 @app.route('/api/scraps/', methods=['POST'])
 def create():
-    # if not request.json or not 'name' in request.json:
-    #         abort(400)
-    #     dev = Developer(request.json.name, request.json.get('hireDate', ''), request.json.get('focus',''))
-    #     db.session.add(dev)
-    #     db.session.commit()
-    #     return jsonify( { 'developer': dev } ), 201
-    pass
+    json_data = request.get_json(force=True)
+    try:
+        (discovered_format, oembed_url) = get_oembed_url(json_data['scrap'], max_width=300, max_height=300)
+    except PyEmbedDiscoveryError:
+        return error("Invalid oEmbed resource URL", 400)
+
+    response = requests.get(oembed_url)
+    oembed_fields = json.loads(response.text)
+    s = Scrapbook(json_data['scrap'], **oembed_fields)
+    db_session.add(s)
+    db_session.commit()
+    return jsonify({"scrap": url_for('get', **{'scrap_id': s.id})}), 201
 
 
 @app.route('/api/scraps/<int:scrap_id>', methods=['PUT'])
@@ -43,8 +48,16 @@ def update():
 
 
 @app.route('/api/scraps/<int:scrap_id>', methods=['DELETE'])
-def delete():
-    pass
+def delete(scrap_id):
+    s = db_session.query(Scrapbook).get(scrap_id)
+    uri = None
+    if not s:
+        return error("Scrap not found")
+    else:
+        uri = url_for('get', **{'scrap_id': s.id})
+    db_session.delete(s)
+    db_session.commit()
+    return jsonify({"message": "%s was successfully deleted" % uri})
 
 
 def error(error_message="Resource not found", status_code=404):
